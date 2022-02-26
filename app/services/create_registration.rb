@@ -16,8 +16,8 @@ class CreateRegistration < ApplicationService
   private
 
   def notify_partners
-    NotifyPartner.new().perform 
-    NotifyPartner.new("another").perform if @payload[:many_partners].eql?(true)
+    NotifyPartner.call 
+    NotifyPartner.call("another") if @payload[:many_partners].eql?(true)
   end
 
   def create_account
