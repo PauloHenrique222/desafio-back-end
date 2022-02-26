@@ -4,44 +4,33 @@ class CreateRegistration < ApplicationService
   end
 
   def call
-    if @payload[:from_partner] == true && @payload[:many_partners] == true
-      @result = create_account_and_notify_partners
-    elsif @payload[:from_partner] == true
-      @result = create_account_and_notify_partner
-    else
-      @result = create_account
+    @result = create_account
+    if @payload[:from_partner].eql?(true) && create_account.success?
+      @result = notify_partners
     end
-
-    return Result.new(true, @result.data) if @result.success?
+    return Result.new(true, @result.body) if @result.success?
 
     @result
   end
 
   private
 
-  def create_account_and_notify_partner
-    CreateAccountAndNotifyPartner.call(@payload)
-  end
-
-  def create_account_and_notify_partners
-    CreateAccountAndNotifyPartners.call(@payload)
+  def notify_partners
+    NotifyPartner.new().perform 
+    NotifyPartner.new("another").perform if @payload[:many_partners].eql?(true)
   end
 
   def create_account
-    if @payload[:name].include?("Fintera") && fintera_users(@payload) == true
-      CreateAccount.call(@payload, true)
-    else
-      CreateAccount.call(@payload, false)
-    end
+    CreateAccount.call(@payload, is_from_fintera?)
   end
 
-  def fintera_users(payload)
-    with_fintera_user = false
+  def is_from_fintera?
+    return false unless @params[:name].include? "Fintera"
 
-    payload[:users].each do |user|
-      with_fintera_user = true if user[:email].include? "fintera.com.br"
+    @params[:users].each do |user|
+      return true if user[:email].include? "fintera.com.br"
     end
 
-    with_fintera_user
+    false
   end
 end

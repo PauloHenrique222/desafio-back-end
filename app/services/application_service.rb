@@ -1,7 +1,7 @@
 class ApplicationService
-  Result = Struct.new(:success?, :data, :error)
+  Result = Struct.new(:success?, :body, :error)
 
-  def self.call(...)
-    new(...).call
+  def self.call(*args)
+    new(*args).call
   end
 end
