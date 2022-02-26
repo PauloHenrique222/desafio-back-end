@@ -5,9 +5,10 @@ class CreateRegistration < ApplicationService
 
   def call
     @result = create_account
-    notify_partners if @payload[:from_partner].eql?(true) && @result.success?
-    return Result.new(true, @result.body) if @result.success?
-
+    if @result.success?
+      notify_partners if @payload[:from_partner].eql?(true)
+      return Result.new(true, @result.body)
+    end
     @result
   end
 
@@ -19,7 +20,7 @@ class CreateRegistration < ApplicationService
   end
 
   def create_account
-    CreateAccount.call(@payload, from_fintera?)
+    CreateAccount.call(@payload, from_fintera: from_fintera?)
   end
 
   def from_fintera?

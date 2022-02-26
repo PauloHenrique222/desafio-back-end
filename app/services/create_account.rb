@@ -1,5 +1,5 @@
 class CreateAccount < ApplicationService
-  def initialize(payload, from_fintera = false)
+  def initialize(payload, from_fintera: false)
     @payload = payload
     @from_fintera = from_fintera
   end
