@@ -6,10 +6,7 @@ class CreateAccount < ApplicationService
   end
 
   def call
-    if !is_account_valid?
-      @errors << "Account is not valid"
-      Result.new(false, nil, @errors.join(","))
-    else
+    if is_account_valid?
       account = Account.new(account_params)
       if account.save && User.insert_all(users_params(account))
         Result.new(true, account)
@@ -17,6 +14,9 @@ class CreateAccount < ApplicationService
         @errors << account.errors.full_messages
         Result.new(false, nil, @errors.join(","))
       end
+    else
+      @errors << "Account is not valid"
+      Result.new(false, nil, @errors.join(","))
     end
   end
 
@@ -27,17 +27,10 @@ class CreateAccount < ApplicationService
   end
 
   def account_params
-    if @from_fintera
-      {
-        name: @payload[:name],
-        active: true,
-      }
-    else
-      {
-        name: @payload[:name],
-        active: false,
-      }
-    end
+    {
+      name: @payload[:name],
+      active: @from_fintera
+    }
   end
 
   def users_params(account)
@@ -49,7 +42,7 @@ class CreateAccount < ApplicationService
         phone: user[:phone].to_s.gsub(/\D/, ""),
         account_id: account.id,
         created_at: Time.zone.now,
-        updated_at: Time.zone.now,
+        updated_at: Time.zone.now
       }
     end
   end
