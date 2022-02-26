@@ -5,11 +5,12 @@ class CreateAccount < ApplicationService
   end
 
   def call
-    return result_with_error if account_valid?
+    return result_with_error unless account_valid?
 
     account = Account.new(account_params)
     if account.save
-      create_entities(@payload[:entities], account)
+      CreateEntities.call(@payload[:entities], account)
+      CreateUsers.call(@payload[:users], account)
       Result.new(true, account)
     else
       result_with_error(account.errors.full_messages)

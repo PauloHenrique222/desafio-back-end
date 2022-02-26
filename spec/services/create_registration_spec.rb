@@ -6,7 +6,7 @@ RSpec.describe CreateRegistration do
     end
 
     subject(:call) { described_class.call(payload) }
-    
+
     let(:fake_result) { ApplicationService::Result.new(true) }
 
     context "when account is from partner" do

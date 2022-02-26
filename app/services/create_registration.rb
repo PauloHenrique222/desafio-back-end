@@ -5,7 +5,7 @@ class CreateRegistration < ApplicationService
 
   def call
     @result = create_account
-    notify_partners if @payload[:from_partner].eql?(true) && create_account.success?
+    notify_partners if @payload[:from_partner].eql?(true) && @result.success?
     return Result.new(true, @result.body) if @result.success?
 
     @result
