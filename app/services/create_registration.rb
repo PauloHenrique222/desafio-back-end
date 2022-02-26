@@ -25,7 +25,7 @@ class CreateRegistration < ApplicationService
   end
 
   def is_from_fintera?
-    return false unless @payload[:name].include? "Fintera"
+    return false unless @payload[:name] && @payload[:name].include?("Fintera")
 
     @payload[:users].each do |user|
       return true if user[:email].include? "fintera.com.br"

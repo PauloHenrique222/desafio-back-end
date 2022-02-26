@@ -1,7 +1,5 @@
 RSpec.describe "Api::V1::RegistrationsController", type: :request do
   describe "POST #create" do
-    before { post api_v1_registrations_path(params: params) }
-
     let(:params) do
       {
         account: {
@@ -15,10 +13,24 @@ RSpec.describe "Api::V1::RegistrationsController", type: :request do
         },
       }
     end
+    
+    context "when account is created" do
+      it "renders 200 success" do
+        post api_v1_registrations_path(params: params)
 
-    it "renders 200 success" do
-      expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)).to include({ "id" => Account.last.id })
+        expect(response).to have_http_status(:created)
+        expect(JSON.parse(response.body)).to include({ "id" => Account.last.id })
+      end
+    end
+
+    context "when account is not created" do
+      it "renders 422 unprocessable entity" do
+        params[:account].delete(:name)
+        post api_v1_registrations_path(params: params)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include({ "error" => "Name can't be blank" })
+      end
     end
   end
 end
