@@ -1,7 +1,12 @@
 RSpec.describe CreateRegistration do
   describe "#call" do
-    subject(:call) { described_class.call(payload) }
+    let(:request_mockapi) do
+      stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
+        .to_return(status: 200, body: "", headers: {})
+    end
 
+    subject(:call) { described_class.call(payload) }
+    
     let(:fake_result) { ApplicationService::Result.new(true) }
 
     context "when account is from partner" do
@@ -20,10 +25,9 @@ RSpec.describe CreateRegistration do
         }
       end
 
-      it "calls CreateAccountAndNotifyPartner service" do
-        expect(CreateAccountAndNotifyPartner).to receive(:call).with(payload).and_return(fake_result)
-
-        call
+      it "is valid" do
+        request_mockapi
+        expect(call.success?).to eq(fake_result.success?)
       end
     end
 
@@ -44,10 +48,9 @@ RSpec.describe CreateRegistration do
         }
       end
 
-      it "calls CreateAccountAndNotifyPartner service" do
-        expect(CreateAccountAndNotifyPartners).to receive(:call).with(payload).and_return(fake_result)
-
-        call
+      it "is valid" do
+        request_mockapi
+        expect(call.success?).to eq(fake_result.success?)
       end
     end
 
@@ -66,10 +69,8 @@ RSpec.describe CreateRegistration do
         }
       end
 
-      it "calls CreateAccount service" do
-        expect(CreateAccount).to receive(:call).with(payload, false).and_return(fake_result)
-
-        call
+      it "is valid" do
+        expect(call.success?).to eq(fake_result.success?)
       end
     end
   end
