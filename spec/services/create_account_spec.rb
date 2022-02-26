@@ -11,7 +11,7 @@ RSpec.describe CreateAccount do
               first_name: Faker::Name.first_name,
               last_name: Faker::Name.last_name,
               email: Faker::Internet.email,
-              phone: "(11) 97111-0101",
+              phone: Faker::PhoneNumber.cell_phone,
             },
           ],
         }
@@ -30,7 +30,7 @@ RSpec.describe CreateAccount do
               first_name: Faker::Name.first_name,
               last_name: Faker::Name.last_name,
               email: Faker::Internet.email,
-              phone: "(11) 97111-0101",
+              phone: Faker::PhoneNumber.cell_phone,
             },
           ],
         }

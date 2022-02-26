@@ -1,6 +1,6 @@
 RSpec.describe NotifyPartner do
-  describe "#perform" do
-    subject(:perform) { described_class.new.perform }
+  describe "#call" do
+    subject(:call) { described_class.call }
 
     let!(:stub) do
       stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
@@ -9,7 +9,7 @@ RSpec.describe NotifyPartner do
     end
 
     it "sends a notification to the partner" do
-      perform
+      call
       expect(stub).to have_been_requested
     end
   end

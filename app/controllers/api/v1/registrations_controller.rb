@@ -5,7 +5,7 @@ module Api
         result = CreateRegistration.call(create_params)
 
         if result.success?
-          render json: result.data, status: :created
+          render json: result.body, status: :created
         else
           render json: { error: result.error }, status: :unprocessable_entity
         end
