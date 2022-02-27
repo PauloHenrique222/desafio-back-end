@@ -5,17 +5,16 @@ class CreateEntities < ApplicationService
   end
 
   def call
-    Entity.insert_all(entities_params)
+    Entity.transaction do
+      entities_instance.each(&:save!)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      raise
+    end
   end
 
-  def entities_params
+  def entities_instance
     @entities.map do |entity|
-      {
-        name: entity[:name],
-        account_id: @account.id,
-        created_at: Time.zone.now,
-        updated_at: Time.zone.now,
-      }
+      Entity.new(name: entity[:name], account_id: @account.id)
     end
   end
 end
