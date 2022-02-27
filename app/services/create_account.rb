@@ -10,7 +10,7 @@ class CreateAccount < ApplicationService
     ActiveRecord::Base.transaction do
       account = Account.create!(account_params)
       CreateEntities.call(@payload[:entities], account)
-      Result.new(true, account)
+      Result.new(true, { account: account })
     end
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
     result_with_error(e.message)

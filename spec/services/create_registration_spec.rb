@@ -16,7 +16,7 @@ RSpec.describe CreateRegistration do
     let(:payload) do
       {
         name: Faker::Superhero.name,
-        from_partner: true,
+        from_partner: "true",
         phone: Faker::PhoneNumber.cell_phone,
         entities: [{
           name: Faker::Superhero.name,
@@ -47,7 +47,7 @@ RSpec.describe CreateRegistration do
 
     context "when account is from many partners" do
       it "is successful" do
-        payload[:many_partners] = true
+        payload[:many_partners] = "true"
         request_mockapi_internal
         request_mockapi_another
         expect(call.success?).to eq(fake_result.success?)

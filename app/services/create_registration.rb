@@ -4,19 +4,21 @@ class CreateRegistration < ApplicationService
   end
 
   def call
-    result = create_account
-    if result.success?
-      notify_partners if @payload[:from_partner].eql?(true)
-      return Result.new(true, result.body)
+    result_account = create_account
+    return result_account unless result_account.success?
+
+    if @payload[:from_partner].eql?("true")
+      result_notify = notify_partners
+      result_account.body[:notify] = result_notify.body
     end
-    result
+    Result.new(true, result_account.body)
   end
 
   private
 
   def notify_partners
+    NotifyPartner.call("another") if @payload[:many_partners].eql?("true")
     NotifyPartner.call
-    NotifyPartner.call("another") if @payload[:many_partners].eql?(true)
   end
 
   def create_account

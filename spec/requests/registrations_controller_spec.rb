@@ -1,10 +1,16 @@
 RSpec.describe "Api::V1::RegistrationsController", type: :request do
+  let(:request_mockapi_internal) do
+    stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
+      .with(body: { "message" => "new registration", "partner" => "internal" })
+      .to_return(status: 200, body: "", headers: {})
+  end
+
   describe "POST #create" do
     let(:params) do
       {
         account: {
           name: Faker::Superhero.name,
-          from_partner: true,
+          from_partner: "true",
           phone: Faker::PhoneNumber.cell_phone,
           entities: [{
             name: Faker::Superhero.name,
@@ -21,10 +27,11 @@ RSpec.describe "Api::V1::RegistrationsController", type: :request do
 
     context "when account is created" do
       it "renders 200 success" do
+        request_mockapi_internal
         post api_v1_registrations_path(params: params)
 
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)).to include({ "id" => Account.last.id })
+        expect(JSON.parse(response.body)["account"]).to include({ "id" => Account.last.id })
       end
     end
 

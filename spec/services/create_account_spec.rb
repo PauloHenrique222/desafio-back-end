@@ -5,7 +5,7 @@ RSpec.describe CreateAccount do
     let(:payload) do
       {
         name: Faker::Superhero.name,
-        from_partner: true,
+        from_partner: "true",
         phone: Faker::PhoneNumber.cell_phone,
         entities: [{
           name: Faker::Superhero.name,
@@ -20,7 +20,7 @@ RSpec.describe CreateAccount do
     end
 
     context "when account is created" do
-      let(:expected_result) { ApplicationService::Result.new(true, Account.last, nil) }
+      let(:expected_result) { ApplicationService::Result.new(true, { account: Account.last }, nil) }
 
       it { is_expected.to eql(expected_result) }
     end
