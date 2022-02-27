@@ -10,7 +10,6 @@ class CreateUsersTableAndUuidExtension < ActiveRecord::Migration[6.1]
       t.string :last_name, null: false
       t.string :email, null: false, index: { unique: true }
       t.string :phone, null: false
-      t.references :account, null: false, foreign_key: true
       t.datetime :confirmed_at
 
       t.timestamps
