@@ -6,7 +6,7 @@ RSpec.describe UserMailer do
     subject(:welcome_email) { described_class.welcome_email(user, call_to_action) }
 
     it "renders the subject" do
-      expect(welcome_email.subject).to eql "Seja bem-vindo à Fintera!"
+      expect(welcome_email.subject).to eql "Welcome to Fintera!"
     end
 
     it "renders the receiver email" do
