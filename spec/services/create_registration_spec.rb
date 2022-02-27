@@ -5,18 +5,18 @@ RSpec.describe CreateRegistration do
     let(:request_mockapi_internal) do
       stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
         .with(body: { "message" => "new registration", "partner" => "internal" })
-        .to_return(status: 200, body: "", headers: {})
+        .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"internal\"}", headers: {})
     end
     let(:request_mockapi_another) do
       stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
         .with(body: { "message" => "new registration", "partner" => "another" })
-        .to_return(status: 200, body: "", headers: {})
+        .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"another\"}", headers: {})
     end
     let(:fake_result) { ApplicationService::Result.new(true) }
     let(:payload) do
       {
         name: Faker::Superhero.name,
-        from_partner: "true",
+        from_partner: true,
         phone: Faker::PhoneNumber.cell_phone,
         entities: [{
           name: Faker::Superhero.name,
@@ -47,7 +47,7 @@ RSpec.describe CreateRegistration do
 
     context "when account is from many partners" do
       it "is successful" do
-        payload[:many_partners] = "true"
+        payload[:many_partners] = true
         request_mockapi_internal
         request_mockapi_another
         expect(call.success?).to eq(fake_result.success?)

@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_and_belongs_to_many :entities
 
-  after_commit :send_welcome_email
+  after_create_commit :send_welcome_email
 
   validates :first_name, presence: true
   validates :last_name, presence: true

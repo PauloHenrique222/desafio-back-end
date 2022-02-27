@@ -5,7 +5,7 @@ RSpec.describe CreateAccount do
     let(:payload) do
       {
         name: Faker::Superhero.name,
-        from_partner: "true",
+        from_partner: true,
         phone: Faker::PhoneNumber.cell_phone,
         entities: [{
           name: Faker::Superhero.name,
