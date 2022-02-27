@@ -13,7 +13,7 @@ class CreateAccount < ApplicationService
       Result.new(true, account)
     end
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-    result_with_error(e)
+    result_with_error(e.message)
   end
 
   def payload_invalid?
@@ -35,6 +35,6 @@ class CreateAccount < ApplicationService
   end
 
   def users_blank?
-    @payload[:entities].map { |entity| entity[:users].blank? }.include?(true)
+    @payload[:entities].pluck(:users).flatten.blank?
   end
 end

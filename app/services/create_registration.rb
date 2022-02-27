@@ -6,7 +6,7 @@ class CreateRegistration < ApplicationService
   def call
     @result = create_account
     if @result.success?
-      # notify_partners if @payload[:from_partner].eql?(true)
+      notify_partners if @payload[:from_partner].eql?(true)
       return Result.new(true, @result.body)
     end
     @result
@@ -26,7 +26,7 @@ class CreateRegistration < ApplicationService
   def from_fintera?
     return false unless @payload[:name]&.include?("Fintera")
 
-    @payload[:users].each do |user|
+    @payload[:entities].pluck(:users).flatten.each do |user|
       return true if user[:email].include? "fintera.com.br"
     end
 
