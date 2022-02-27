@@ -4,12 +4,12 @@ class CreateRegistration < ApplicationService
   end
 
   def call
-    @result = create_account
-    if @result.success?
+    result = create_account
+    if result.success?
       notify_partners if @payload[:from_partner].eql?(true)
-      return Result.new(true, @result.body)
+      return Result.new(true, result.body)
     end
-    @result
+    result
   end
 
   private

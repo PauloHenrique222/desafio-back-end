@@ -28,12 +28,17 @@ RSpec.describe CreateAccount do
     context "when account is not created" do
       let(:expected_result) { ->(message) { ApplicationService::Result.new(false, nil, message) } }
 
-      it "record invalid" do
+      it "the record is invalid" do
         payload[:name] = nil
-        expect(call).to eql(expected_result["Validation failed: Account must exist"])
+        expect(call).to eql(expected_result["Validation failed: Name can't be blank"])
       end
 
-      it "payload invalid" do
+      it do
+        payload[:entities].last[:name] = nil
+        expect(call).to eql(expected_result["Validation failed: Name can't be blank"])
+      end
+
+      it "the payload is invalid" do
         payload[:entities] = []
         expect(call).to eql(expected_result["Validation failed: Account is not valid"])
       end

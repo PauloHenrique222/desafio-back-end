@@ -8,7 +8,7 @@ class CreateAccount < ApplicationService
     return result_with_error if payload_invalid?
 
     ActiveRecord::Base.transaction do
-      account = Account.create(account_params)
+      account = Account.create!(account_params)
       CreateEntities.call(@payload[:entities], account)
       Result.new(true, account)
     end
