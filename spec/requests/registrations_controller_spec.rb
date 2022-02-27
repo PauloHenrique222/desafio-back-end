@@ -3,17 +3,22 @@ RSpec.describe "Api::V1::RegistrationsController", type: :request do
     let(:params) do
       {
         account: {
-          name: Faker::Superhero.name, from_partner: true,
-          users: [{
-            email: Faker::Internet.email,
-            first_name: Faker::Name.female_first_name,
-            last_name: Faker::Name.last_name,
-            phone: Faker::PhoneNumber.cell_phone,
+          name: Faker::Superhero.name,
+          from_partner: true,
+          phone: Faker::PhoneNumber.cell_phone,
+          entities: [{
+            name: Faker::Superhero.name,
+            users: [{
+              email: Faker::Internet.email,
+              first_name: Faker::Name.female_first_name,
+              last_name: Faker::Name.last_name,
+              phone: Faker::PhoneNumber.cell_phone,
+            }],
           }],
         },
       }
     end
-    
+
     context "when account is created" do
       it "renders 200 success" do
         post api_v1_registrations_path(params: params)
@@ -25,11 +30,11 @@ RSpec.describe "Api::V1::RegistrationsController", type: :request do
 
     context "when account is not created" do
       it "renders 422 unprocessable entity" do
-        params[:account].delete(:name)
+        params[:account].delete(:entities)
         post api_v1_registrations_path(params: params)
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to include({ "error" => "Name can't be blank" })
+        expect(JSON.parse(response.body)).to include({ "error" => "Validation failed: Account is not valid" })
       end
     end
   end

@@ -7,7 +7,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true
 
   def send_welcome_email
-    call_to_action = { label: "Acesse agora", url: "https://fintera.com.br" }
+    call_to_action = { label: "Login now", url: "https://fintera.com.br" }
     UserMailer.welcome_email(self, call_to_action).deliver_now
   end
 end

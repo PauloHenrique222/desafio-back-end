@@ -1,23 +1,18 @@
 class CreateUsers < ApplicationService
-  def initialize(users, account)
+  def initialize(users)
     @users = users
-    @account = account
   end
 
   def call
     User.transaction do
-      users_instance.each(&:save!)
+      @users.map do |user|
+        User.create(first_name: user[:first_name],
+                    last_name: user[:last_name],
+                    email: user[:email],
+                    phone: user[:phone].to_s.gsub(/\D/, ""))
+      end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
       raise
-    end
-  end
-
-  def users_instance
-    @users.map do |user|
-      User.new(first_name: user[:first_name],
-               last_name: user[:last_name],
-               email: user[:email],
-               phone: user[:phone].to_s.gsub(/\D/, ""))
     end
   end
 end

@@ -5,20 +5,19 @@ class CreateAccount < ApplicationService
   end
 
   def call
-    return result_with_error if account_invalid?
+    return result_with_error if payload_invalid?
 
     ActiveRecord::Base.transaction do
       account = Account.create(account_params)
       CreateEntities.call(@payload[:entities], account)
-      CreateUsers.call(@payload[:users], account)
       Result.new(true, account)
     end
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
     result_with_error(e)
   end
 
-  def account_invalid?
-    return true if @payload.blank?
+  def payload_invalid?
+    return true if @payload.blank? || @payload[:entities].blank? || users_blank?
 
     false
   end
@@ -33,5 +32,9 @@ class CreateAccount < ApplicationService
 
   def result_with_error(error = "Validation failed: Account is not valid")
     Result.new(false, nil, error)
+  end
+
+  def users_blank?
+    @payload[:entities].map { |entity| entity[:users].blank? }.include?(true)
   end
 end
