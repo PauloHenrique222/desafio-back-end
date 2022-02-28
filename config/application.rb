@@ -41,5 +41,7 @@ module DesafioBackEnd
       from: "Desafio Fintera <desafio@fintera.com.br>",
       charset: "utf-8",
     }
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end

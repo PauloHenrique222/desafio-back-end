@@ -1,7 +1,7 @@
-class ReceiveMessages < ApplicationService
-  require "aws-sdk-sqs"
-  require "aws-sdk-sts"
+require "aws-sdk-sqs"
+require "aws-sdk-sts"
 
+class ReceiveMessages < ApplicationService
   def initialize(region, queue_url, max_number_of_messages: 10)
     @sqs_client = Aws::SQS::Client.new(region: region)
     @queue_url = queue_url
@@ -15,7 +15,7 @@ class ReceiveMessages < ApplicationService
     )
     return Result.new(true, "No messages to receive") if response.messages.count.zero?
 
-    response.messages.each { |message| puts message.body }
+    response.messages.each { |message| NewRegistrationWorker.perform_async(message.body) }
     Result.new(true, "Received messages")
   rescue StandardError => e
     Result.new(false, nil, "Error receiving messages: #{e.message}")
