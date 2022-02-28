@@ -1,13 +1,12 @@
 RSpec.describe NewRegistrationWorker do
-  let(:request_mockapi_internal) do
-    stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
-      .with(body: { "message" => "new registration", "partner" => "internal" })
-      .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"internal\"}", headers: {})
-  end
-
   describe "#perform" do
     subject(:perform) { described_class.new.perform(sqs_message.data) }
 
+    let(:request_mockapi_internal) do
+      stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
+        .with(body: { "message" => "new registration", "partner" => "internal" })
+        .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"internal\"}", headers: {})
+    end
     let(:sqs_message) { OpenStruct.new(data: body) }
     let(:body) do
       {
@@ -29,8 +28,6 @@ RSpec.describe NewRegistrationWorker do
     end
 
     context "when payload is valid" do
-      let(:expected_result) { ApplicationService::Result.new(true, { account: Account.last }, nil) }
-
       it "creates a new registration" do
         request_mockapi_internal
         expect(perform.success?).to be(true)

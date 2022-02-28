@@ -1,11 +1,10 @@
 RSpec.describe "Api::V1::RegistrationsController", type: :request do
-  let(:request_mockapi_internal) do
-    stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
-      .with(body: { "message" => "new registration", "partner" => "internal" })
-      .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"internal\"}", headers: {})
-  end
-
   describe "POST #create" do
+    let(:request_mockapi_internal) do
+      stub_request(:post, "https://61b69749c95dd70017d40f4b.mockapi.io/awesome_partner_leads")
+        .with(body: { "message" => "new registration", "partner" => "internal" })
+        .to_return(status: 200, body: "{\"message\":\"new registration\",\"partner\":\"internal\"}", headers: {})
+    end
     let(:params) do
       {
         account: {

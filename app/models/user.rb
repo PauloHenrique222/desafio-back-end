@@ -4,7 +4,7 @@ class User < ApplicationRecord
   after_create_commit :send_welcome_email
 
   validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :email, uniqueness: true
 
   def send_welcome_email
     call_to_action = { label: "Login now", url: "https://fintera.com.br" }
